@@ -18,12 +18,12 @@ export function ProductCard({ product, priority = false }: { product: Product; p
         />
         {/* Hairline inside the image edge keeps light photos from bleeding into the card. */}
         <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/5 dark:ring-white/5" />
-        <span className="absolute left-3 top-3 rounded-md bg-surface/90 px-2 py-1 text-xs font-medium text-ink shadow-card backdrop-blur-sm">
+        <span className="absolute left-2 top-2 max-w-[calc(100%-1rem)] truncate rounded-md bg-surface/90 px-1.5 py-0.5 text-[0.6875rem] font-medium text-ink shadow-card backdrop-blur-sm min-[480px]:left-3 min-[480px]:top-3 min-[480px]:max-w-none min-[480px]:px-2 min-[480px]:py-1 min-[480px]:text-xs">
           {product.category}
         </span>
       </div>
-      <div className="flex flex-1 flex-col p-4">
-        <h3 className="line-clamp-2 min-h-12 break-words text-base font-semibold leading-6 tracking-[-0.015em] text-ink">
+      <div className="flex flex-1 flex-col p-3 min-[480px]:p-4">
+        <h3 className="line-clamp-2 min-h-10 break-words text-sm font-semibold leading-5 tracking-[-0.015em] text-ink min-[480px]:min-h-12 min-[480px]:text-base min-[480px]:leading-6">
           <Link
             href={`/products/${product.id}`}
             className="rounded-sm after:absolute after:inset-0 after:content-[''] focus-visible:outline-offset-[-2px]"
@@ -31,27 +31,27 @@ export function ProductCard({ product, priority = false }: { product: Product; p
             {product.name}
           </Link>
         </h3>
-        <p className="mt-1 line-clamp-2 min-h-10 break-words text-sm leading-5 text-ink-2">
+        <p className="mt-1 line-clamp-2 min-h-8 break-words text-xs leading-4 text-ink-2 min-[480px]:min-h-10 min-[480px]:text-sm min-[480px]:leading-5">
           {product.shortDescription}
         </p>
-        <div className="mt-3 flex items-center justify-between gap-3">
-          <p className="text-xl font-semibold tabular-nums tracking-[-0.02em] text-ink">
+        <div className="mt-2 flex items-center justify-between gap-3 min-[480px]:mt-3">
+          <p className="min-w-0 text-base font-semibold tabular-nums tracking-[-0.02em] text-ink min-[480px]:text-xl">
             {formatPrice(product.price, product.currency)}
           </p>
           <span
             aria-hidden
-            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-ink transition-colors group-hover:bg-accent group-hover:text-on-accent"
+            className="hidden size-8 shrink-0 items-center justify-center rounded-full bg-accent-soft min-[480px]:flex text-accent-ink transition-colors group-hover:bg-accent group-hover:text-on-accent"
           >
             <ArrowUpRight className="size-4 transition-transform motion-safe:group-hover:translate-x-px motion-safe:group-hover:-translate-y-px" />
           </span>
         </div>
-        <div className="mt-4 flex items-center justify-between gap-3 border-t border-line pt-3 text-xs text-ink-3">
+        <div className="mt-3 flex flex-col items-start gap-1 border-t border-line pt-2.5 text-xs text-ink-3 min-[480px]:mt-4 min-[480px]:flex-row min-[480px]:items-center min-[480px]:justify-between min-[480px]:gap-3 min-[480px]:pt-3">
           {/* Location keeps priority (up to 60% of the row); both truncate rather than overflow. */}
-          <span className="inline-flex max-w-[60%] shrink-0 items-center gap-1">
+          <span className="inline-flex max-w-full items-center gap-1 min-[480px]:max-w-[60%] min-[480px]:shrink-0">
             <MapPin className="size-3.5 shrink-0" aria-hidden />
             <span className="truncate">{product.location}</span>
           </span>
-          <span className="inline-flex min-w-0 items-center gap-1">
+          <span className="inline-flex min-w-0 max-w-full items-center gap-1">
             <span className="truncate">{product.seller.name}</span>
             {product.seller.verified && (
               <BadgeCheck className="size-3.5 shrink-0 text-accent-ink" role="img" aria-label="Verified seller" />

@@ -1,0 +1,191 @@
+--- components/marketplace/ProductGrid.tsx	2026-10-06 20:59:09.000000000 +0000
++++ components/marketplace/ProductGrid.tsx	2026-10-07 19:22:29.436150714 +0000
+@@ -3,7 +3,7 @@
+ 
+ /** Shared by the products page, home page and loading skeleton so columns always match. */
+ export const productGridClasses =
+-  "grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-6";
++  "grid grid-cols-2 gap-3 min-[480px]:gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-6";
+ 
+ export function ProductGrid({
+   products,
+--- components/products/ProductCard.tsx	2026-10-06 20:59:09.000000000 +0000
++++ components/products/ProductCard.tsx	2026-10-07 19:22:29.440946369 +0000
+@@ -18,12 +18,12 @@
+         />
+         {/* Hairline inside the image edge keeps light photos from bleeding into the card. */}
+         <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/5 dark:ring-white/5" />
+-        <span className="absolute left-3 top-3 rounded-md bg-surface/90 px-2 py-1 text-xs font-medium text-ink shadow-card backdrop-blur-sm">
++        <span className="absolute left-2 top-2 max-w-[calc(100%-1rem)] truncate rounded-md bg-surface/90 px-1.5 py-0.5 text-[0.6875rem] font-medium text-ink shadow-card backdrop-blur-sm min-[480px]:left-3 min-[480px]:top-3 min-[480px]:max-w-none min-[480px]:px-2 min-[480px]:py-1 min-[480px]:text-xs">
+           {product.category}
+         </span>
+       </div>
+-      <div className="flex flex-1 flex-col p-4">
+-        <h3 className="line-clamp-2 min-h-12 break-words text-base font-semibold leading-6 tracking-[-0.015em] text-ink">
++      <div className="flex flex-1 flex-col p-3 min-[480px]:p-4">
++        <h3 className="line-clamp-2 min-h-10 break-words text-sm font-semibold leading-5 tracking-[-0.015em] text-ink min-[480px]:min-h-12 min-[480px]:text-base min-[480px]:leading-6">
+           <Link
+             href={`/products/${product.id}`}
+             className="rounded-sm after:absolute after:inset-0 after:content-[''] focus-visible:outline-offset-[-2px]"
+@@ -31,27 +31,27 @@
+             {product.name}
+           </Link>
+         </h3>
+-        <p className="mt-1 line-clamp-2 min-h-10 break-words text-sm leading-5 text-ink-2">
++        <p className="mt-1 line-clamp-2 min-h-8 break-words text-xs leading-4 text-ink-2 min-[480px]:min-h-10 min-[480px]:text-sm min-[480px]:leading-5">
+           {product.shortDescription}
+         </p>
+-        <div className="mt-3 flex items-center justify-between gap-3">
+-          <p className="text-xl font-semibold tabular-nums tracking-[-0.02em] text-ink">
++        <div className="mt-2 flex items-center justify-between gap-3 min-[480px]:mt-3">
++          <p className="min-w-0 text-base font-semibold tabular-nums tracking-[-0.02em] text-ink min-[480px]:text-xl">
+             {formatPrice(product.price, product.currency)}
+           </p>
+           <span
+             aria-hidden
+-            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-ink transition-colors group-hover:bg-accent group-hover:text-on-accent"
++            className="hidden size-8 shrink-0 items-center justify-center rounded-full bg-accent-soft min-[480px]:flex text-accent-ink transition-colors group-hover:bg-accent group-hover:text-on-accent"
+           >
+             <ArrowUpRight className="size-4 transition-transform motion-safe:group-hover:translate-x-px motion-safe:group-hover:-translate-y-px" />
+           </span>
+         </div>
+-        <div className="mt-4 flex items-center justify-between gap-3 border-t border-line pt-3 text-xs text-ink-3">
++        <div className="mt-3 flex flex-col items-start gap-1 border-t border-line pt-2.5 text-xs text-ink-3 min-[480px]:mt-4 min-[480px]:flex-row min-[480px]:items-center min-[480px]:justify-between min-[480px]:gap-3 min-[480px]:pt-3">
+           {/* Location keeps priority (up to 60% of the row); both truncate rather than overflow. */}
+-          <span className="inline-flex max-w-[60%] shrink-0 items-center gap-1">
++          <span className="inline-flex max-w-full items-center gap-1 min-[480px]:max-w-[60%] min-[480px]:shrink-0">
+             <MapPin className="size-3.5 shrink-0" aria-hidden />
+             <span className="truncate">{product.location}</span>
+           </span>
+-          <span className="inline-flex min-w-0 items-center gap-1">
++          <span className="inline-flex min-w-0 max-w-full items-center gap-1">
+             <span className="truncate">{product.seller.name}</span>
+             {product.seller.verified && (
+               <BadgeCheck className="size-3.5 shrink-0 text-accent-ink" role="img" aria-label="Verified seller" />
+--- components/products/ProductCardSkeleton.tsx	2026-10-06 20:59:09.000000000 +0000
++++ components/products/ProductCardSkeleton.tsx	2026-10-07 19:22:29.441876476 +0000
+@@ -3,20 +3,20 @@
+   return (
+     <div className="flex h-full animate-pulse flex-col overflow-hidden rounded-xl border border-line bg-surface motion-reduce:animate-none">
+       <div className="aspect-[4/3] bg-surface-2" />
+-      <div className="flex flex-1 flex-col p-4">
+-        <div className="min-h-12 space-y-2 pt-1">
++      <div className="flex flex-1 flex-col p-3 min-[480px]:p-4">
++        <div className="min-h-10 space-y-2 pt-1 min-[480px]:min-h-12">
+           <div className="h-4 w-4/5 rounded bg-surface-2" />
+           <div className="h-4 w-3/5 rounded bg-surface-2" />
+         </div>
+-        <div className="mt-1 min-h-10 space-y-2 pt-1">
++        <div className="mt-1 min-h-8 space-y-2 pt-1 min-[480px]:min-h-10">
+           <div className="h-3 w-full rounded bg-surface-2" />
+           <div className="h-3 w-2/3 rounded bg-surface-2" />
+         </div>
+-        <div className="mt-3 flex items-center justify-between">
++        <div className="mt-2 flex items-center justify-between min-[480px]:mt-3">
+           <div className="h-7 w-28 rounded bg-surface-2" />
+-          <div className="size-8 rounded-full bg-surface-2" />
++          <div className="hidden size-8 rounded-full bg-surface-2 min-[480px]:block" />
+         </div>
+-        <div className="mt-4 flex justify-between border-t border-line pt-3">
++        <div className="mt-3 flex flex-col gap-1 border-t border-line pt-2.5 min-[480px]:mt-4 min-[480px]:flex-row min-[480px]:justify-between min-[480px]:gap-0 min-[480px]:pt-3">
+           <div className="h-4 w-20 rounded bg-surface-2" />
+           <div className="h-4 w-16 rounded bg-surface-2" />
+         </div>
+--- components/telegram/TelegramBadge.tsx	2026-10-06 03:04:20.000000000 +0000
++++ components/telegram/TelegramBadge.tsx	2026-10-07 19:22:29.442254002 +0000
+@@ -12,9 +12,9 @@
+   const name = getTelegramDisplayName(user);
+ 
+   return (
+-    <span className="inline-flex min-w-0 items-center gap-1.5 rounded-md border border-sky-200 bg-sky-50 px-2 py-1 text-xs font-medium text-sky-900">
++    <span className="inline-flex min-w-0 items-center gap-1.5 rounded-md border border-sky-200 bg-sky-50 px-2 py-1 text-xs font-medium text-sky-900 max-[399px]:px-1.5">
+       <Send className="size-3.5 shrink-0" aria-hidden />
+-      <span>Telegram</span>
++      <span className="max-[399px]:sr-only">Telegram</span>
+       {name && <span className="max-sm:sr-only truncate">· Hello, {name}</span>}
+     </span>
+   );
+--- components/layout/Header.tsx	2026-10-06 21:27:01.000000000 +0000
++++ components/layout/Header.tsx	2026-10-07 19:22:29.442406023 +0000
+@@ -14,7 +14,7 @@
+     <header className="sticky top-0 z-40 border-b border-line bg-[var(--header-bg)] backdrop-blur-md">
+       <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+         {/* The badge sits with the logo so it never shifts the nav when it appears. */}
+-        <div className="flex min-w-0 items-center gap-3">
++        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+           <Logo />
+           <TelegramBadge />
+         </div>
+--- components/layout/MobileNav.tsx	2026-10-06 21:23:16.000000000 +0000
++++ components/layout/MobileNav.tsx	2026-10-07 19:23:57.131799778 +0000
+@@ -1,7 +1,7 @@
+ "use client";
+ 
+ import Link from "next/link";
+-import { useEffect, useState } from "react";
++import { useEffect, useRef, useState } from "react";
+ import { Menu, X } from "lucide-react";
+ import { TelegramOpenAppLink } from "@/components/telegram/TelegramOpenAppLink";
+ import { useTelegram } from "@/lib/telegram/TelegramProvider";
+@@ -11,6 +11,7 @@
+ 
+ export function MobileNav({ categories }: { categories: CategorySummary[] }) {
+   const [open, setOpen] = useState(false);
++  const container = useRef<HTMLDivElement>(null);
+   const { isTelegram, user } = useTelegram();
+   const close = () => setOpen(false);
+   const linkClass =
+@@ -21,12 +22,20 @@
+     const onKeyDown = (event: KeyboardEvent) => {
+       if (event.key === "Escape") setOpen(false);
+     };
++    // Tapping anywhere outside the button and menu closes it, so it can never stay open by accident.
++    const onPointerDown = (event: PointerEvent) => {
++      if (!container.current?.contains(event.target as Node)) setOpen(false);
++    };
+     document.addEventListener("keydown", onKeyDown);
+-    return () => document.removeEventListener("keydown", onKeyDown);
++    document.addEventListener("pointerdown", onPointerDown);
++    return () => {
++      document.removeEventListener("keydown", onKeyDown);
++      document.removeEventListener("pointerdown", onPointerDown);
++    };
+   }, [open]);
+ 
+   return (
+-    <div className="md:hidden">
++    <div ref={container} className="md:hidden">
+       <button
+         type="button"
+         onClick={() => setOpen((value) => !value)}
+@@ -42,7 +51,7 @@
+         <nav
+           id="mobile-menu"
+           aria-label="Mobile"
+-          className="absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-line bg-surface px-4 pb-4 pt-3 shadow-pop"
++          className="absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-line bg-surface px-4 pb-3 pt-2 shadow-pop"
+         >
+           {isTelegram && (
+             <p className="px-3 pb-2 text-sm text-ink-2">{getTelegramGreeting(user)}</p>
+@@ -54,17 +63,17 @@
+               </Link>
+             </li>
+           </ul>
+-          <div className="mt-1">
++          <div className="mt-1" onClick={close}>
+             <TelegramOpenAppLink variant="menu" />
+           </div>
+-          <p className="mt-4 px-3 text-xs font-semibold uppercase tracking-wider text-ink-3">Categories</p>
+-          <ul className="mx-auto mt-1 max-w-6xl">
++          <p className="mt-3 px-3 text-xs font-semibold uppercase tracking-wider text-ink-3">Categories</p>
++          <ul className="mx-auto mt-1 grid max-w-6xl grid-cols-2 gap-x-2">
+             {categories.map((category) => (
+               <li key={category.name}>
+                 <Link
+                   href={productsHref({ category: category.name })}
+                   onClick={close}
+-                  className={`${linkClass} justify-between`}
++                  className={`${linkClass.replace("text-base", "text-sm")} justify-between gap-2`}
+                 >
+                   {category.name}
+                   <span className="text-sm tabular-nums text-ink-3">{category.count}</span>

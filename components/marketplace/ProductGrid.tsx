@@ -3,7 +3,7 @@ import type { Product } from "@/types/product";
 
 /** Shared by the products page, home page and loading skeleton so columns always match. */
 export const productGridClasses =
-  "grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-6";
+  "grid grid-cols-2 gap-3 min-[480px]:gap-4 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-6";
 
 export function ProductGrid({
   products,

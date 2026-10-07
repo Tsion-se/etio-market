@@ -15,7 +15,7 @@ export async function Header() {
     <header className="sticky top-0 z-40 border-b border-line bg-[var(--header-bg)] backdrop-blur-md">
       <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         {/* The badge sits with the logo so it never shifts the nav when it appears. */}
-        <div className="flex min-w-0 items-center gap-3">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <Logo />
           <TelegramBadge />
         </div>

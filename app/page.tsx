@@ -50,7 +50,11 @@ function TelegramLink({ href, variant, children }: { href: string; variant: "pri
   );
 }
 
-/** Desktop collage tile: real product photo, floating info card, links to the product page. */
+/**
+ * Collage tile: real product photo, floating info card, links to the product page.
+ * Shown on every screen size. On narrow screens the card shows only the price visually
+ * (the name and location stay available to screen readers) so it never gets cramped.
+ */
 function CollageTile({ product, aspect }: { product: Product; aspect: string }) {
   return (
     <Link
@@ -61,18 +65,18 @@ function CollageTile({ product, aspect }: { product: Product; aspect: string }) 
         src={product.images[0]}
         alt=""
         fill
-        sizes="(min-width: 1024px) 22vw, 0px"
+        sizes="(min-width: 1024px) 22vw, (min-width: 640px) 40vw, 45vw"
         className="object-cover transition-transform duration-500 ease-out motion-safe:group-hover:scale-[1.04]"
       />
       <span aria-hidden className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/5 dark:ring-white/5" />
-      <span className="absolute inset-x-2.5 bottom-2.5 block rounded-lg border border-line bg-surface/95 px-3 py-2 shadow-card backdrop-blur-sm">
+      <span className="absolute inset-x-2 bottom-2 block rounded-lg border border-line bg-surface/95 px-2 py-1.5 shadow-card backdrop-blur-sm sm:inset-x-2.5 sm:bottom-2.5 sm:px-3 sm:py-2">
         <span className="flex items-center justify-between gap-2">
-          <span className="truncate text-xs font-semibold text-ink">{product.name}</span>
+          <span className="truncate text-xs font-semibold text-ink max-[479px]:sr-only">{product.name}</span>
           <span className="shrink-0 text-xs font-semibold tabular-nums text-ink">
             {formatPrice(product.price, product.currency)}
           </span>
         </span>
-        <span className="mt-0.5 flex items-center gap-1 text-xs text-ink-3">
+        <span className="mt-0.5 flex items-center gap-1 text-xs text-ink-3 max-sm:sr-only">
           <MapPin className="size-3 shrink-0" aria-hidden />
           <span className="truncate">{product.location}</span>
         </span>
@@ -112,13 +116,13 @@ export default async function HomePage() {
   return (
     <>
       <style>{revealCss}</style>
-      {/* 1. Hero: search first on mobile, product collage on desktop */}
+      {/* 1. Hero: text and search first, product collage below on mobile / beside the text on desktop */}
       <section className="relative isolate overflow-hidden border-b border-line">
         <div
           aria-hidden
           className="absolute inset-0 -z-10 bg-[radial-gradient(60%_70%_at_85%_0%,var(--hero-glow),transparent)]"
         />
-        <div className="mx-auto grid max-w-6xl items-center gap-12 px-4 py-8 sm:px-6 sm:py-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16 lg:py-20">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-8 sm:px-6 sm:py-14 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16 lg:py-20">
           <div className="min-w-0">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-accent-ink">Local marketplace</p>
             <h1 className="mt-3 text-balance text-[2rem] font-semibold leading-[1.08] tracking-[-0.035em] text-ink sm:text-5xl lg:text-6xl">
@@ -172,7 +176,7 @@ export default async function HomePage() {
             </nav>
 
             {telegramHref && (
-              <p className={cn("mt-3 text-sm text-ink-2 max-sm:hidden", hideInTelegram)}>
+              <p className={cn("mt-3 text-sm text-ink-2", hideInTelegram)}>
                 Also available as a Telegram Mini App.{" "}
                 <a href="#telegram" className="font-medium text-accent-ink underline underline-offset-4">
                   Learn more
@@ -181,12 +185,13 @@ export default async function HomePage() {
             )}
           </div>
 
+          {/* Visible on every screen: under the text on mobile, beside it on desktop. */}
           {a && b && c && (
-            <div className="hidden grid-cols-2 gap-4 lg:grid">
-              <div className="pt-10">
+            <div className="mx-auto grid w-full max-w-md grid-cols-2 gap-3 sm:gap-4 lg:max-w-none">
+              <div className="pt-8 sm:pt-10">
                 <CollageTile product={a} aspect="aspect-[3/4]" />
               </div>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <CollageTile product={b} aspect="aspect-[4/3]" />
                 <CollageTile product={c} aspect="aspect-square" />
               </div>
