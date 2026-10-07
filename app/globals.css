@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+/* Dark mode is class-based (`.dark` on <html>) so the user's choice can override the system preference. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Design tokens. Components use the semantic names (canvas / surface / ink / line / accent),
+ * never raw palette values, so a theme is just a different set of variables.
+ */
+:root {
+  color-scheme: light;
+
+  /* Surfaces: a warm neutral canvas with white cards on top. */
+  --canvas: #f6f5f3;
+  --surface: #ffffff;
+  --surface-2: #efede9;
+  --line: #e4e2dc;
+  --line-strong: #cfccc4;
+
+  /* Text */
+  --ink: #1b1a22;
+  --ink-2: #55535f;
+  --ink-3: #64626e;
+
+  /* Brand (the existing indigo/purple, used for actions, links and small accents only) */
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-active: #3730a3;
+  --on-accent: #ffffff;
+  --accent-soft: #eceafd;
+  --accent-ink: #4338ca;
+
+  /* Status */
+  --success: #047857;
+  --danger: #b91c1c;
+  --star: #d97706;
+
+  /* Elevation: restrained, with a tight ambient shadow */
+  --sh-card: 0 1px 2px rgb(28 25 23 / 0.04);
+  --sh-lift: 0 1px 2px rgb(28 25 23 / 0.04), 0 10px 24px -8px rgb(28 25 23 / 0.14);
+  --sh-pop: 0 12px 32px -8px rgb(28 25 23 / 0.2), 0 2px 6px rgb(28 25 23 / 0.06);
+
+  --header-bg: rgb(246 245 243 / 0.82);
+  --hero-glow: rgb(79 70 229 / 0.1);
+  --grid-dot: rgb(28 25 23 / 0.09);
+  --placeholder: #e9e6e0;
+
+  /*
+   * Bottom inset for sticky/bottom UI: the device safe area, or Telegram's content safe area
+   * (set by the Telegram SDK in fullscreen mode), whichever is larger. 0 in a normal browser.
+   */
+  --safe-bottom: max(env(safe-area-inset-bottom, 0px), var(--tg-content-safe-area-inset-bottom, 0px));
+}
+
+:root.dark {
+  color-scheme: dark;
+
+  /* Dark mode is designed, not inverted: a faintly violet near-black, with lighter raised surfaces. */
+  --canvas: #0f0e13;
+  --surface: #17161d;
+  --surface-2: #1f1e27;
+  --line: #2b2a35;
+  --line-strong: #3d3c4a;
+
+  --ink: #f2f1f6;
+  --ink-2: #b4b2c0;
+  --ink-3: #8f8d9c;
+
+  --accent: #6559f0;
+  --accent-hover: #7569f5;
+  --accent-active: #5b50ee;
+  --on-accent: #ffffff;
+  --accent-soft: #24213f;
+  --accent-ink: #b3aeff;
+
+  --success: #34d399;
+  --danger: #f87171;
+  --star: #fbbf24;
+
+  --sh-card: 0 1px 0 rgb(255 255 255 / 0.03) inset;
+  --sh-lift: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 14px 28px -10px rgb(0 0 0 / 0.65);
+  --sh-pop: 0 16px 40px -8px rgb(0 0 0 / 0.7), 0 0 0 1px rgb(255 255 255 / 0.04);
+
+  --header-bg: rgb(15 14 19 / 0.82);
+  --hero-glow: rgb(101 89 240 / 0.16);
+  --grid-dot: rgb(255 255 255 / 0.07);
+  --placeholder: #22212b;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-active: var(--accent-active);
+  --color-on-accent: var(--on-accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-star: var(--star);
+  --color-placeholder: var(--placeholder);
+
+  /* Kept for compatibility with existing class names */
+  --color-background: var(--canvas);
+  --color-foreground: var(--ink);
+
+  --shadow-card: var(--sh-card);
+  --shadow-lift: var(--sh-lift);
+  --shadow-pop: var(--sh-pop);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Radius scale: 8px controls, 12px cards. Full only for avatars and the theme toggle. */
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+}
+
+html {
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss03";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Smooth the theme change only while it is happening, so normal hover transitions stay snappy. */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    fill 200ms ease !important;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+:root.dark :focus-visible {
+  outline-color: var(--accent-ink);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+/* Faint dotted texture used behind the hero */
+.bg-dots {
+  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
