@@ -57,6 +57,8 @@ export function ProductInfo({ product }: { product: Product }) {
       {/* Seller action: directly under the price on phones, in its original place on desktop. Scrolls with the page. */}
       <ContactSellerButton
         sellerName={seller.name}
+        telegramUsername={seller.telegramUsername}
+        productName={product.name}
         size="lg"
         className="order-4 mt-5 w-full md:order-6 md:mt-7 [&>button]:w-full"
       />

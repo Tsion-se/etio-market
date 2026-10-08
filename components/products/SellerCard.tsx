@@ -4,7 +4,7 @@ import { formatDate } from "@/lib/utils";
 import type { Seller } from "@/types/product";
 import { ContactSellerButton } from "./ContactSellerButton";
 
-export function SellerCard({ seller, chatHref = null }: { seller: Seller; chatHref?: string | null }) {
+export function SellerCard({ seller, productName }: { seller: Seller; productName?: string }) {
   return (
     <section aria-labelledby="seller-heading">
       <h2 id="seller-heading" className="text-lg font-semibold tracking-[-0.02em] text-ink">
@@ -52,9 +52,10 @@ export function SellerCard({ seller, chatHref = null }: { seller: Seller; chatHr
 
         <ContactSellerButton
           sellerName={seller.name}
-          chatHref={chatHref}
+          telegramUsername={seller.telegramUsername}
+          productName={productName}
           variant="secondary"
-          className="mt-2 [&>button]:w-full [&>a]:w-full"
+          className="mt-2 [&>button]:w-full"
         />
       </div>
     </section>

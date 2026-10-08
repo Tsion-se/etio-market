@@ -30,6 +30,22 @@ export function createTelegramMiniAppLink(): string | null {
     : `https://t.me/${config.botUsername}?startapp`;
 }
 
+const SELLER_USERNAME_PATTERN = /^[A-Za-z][A-Za-z0-9_]{4,31}$/; // Telegram usernames: 5-32 chars
+
+/**
+ * Opens a chat with a seller: `https://t.me/<username>?text=<encoded message>`.
+ * Null when the username is missing or invalid (a username is never guessed).
+ */
+export function createSellerChatLink(
+  username: string | null | undefined,
+  message?: string,
+): string | null {
+  const name = username?.trim().replace(/^@/, "");
+  if (!name || !SELLER_USERNAME_PATTERN.test(name)) return null;
+  const base = `https://t.me/${name}`;
+  return message ? `${base}?text=${encodeURIComponent(message)}` : base;
+}
+
 /** Telegram's native share dialog (works in the browser and via openTelegramLink in a Mini App). */
 export function createTelegramShareLink(url: string, text?: string): string {
   const params = new URLSearchParams({ url });
@@ -42,25 +58,6 @@ export function createProductShareLink(productId: string, text?: string): string
   const target = createTelegramProductLink(productId) ?? createWebsiteProductUrl(productId);
   return target ? createTelegramShareLink(target, text) : null;
 }
-
-/* ---------- Seller direct chat (new) ---------- */
-
-// Telegram usernames: 5-32 characters, start with a letter, then letters, digits or underscores.
-const TELEGRAM_USERNAME_PATTERN = /^[A-Za-z][A-Za-z0-9_]{4,31}$/;
-
-/**
- * Link that opens a direct Telegram chat with a seller, optionally with a pre-filled message.
- * Returns null when the seller has no (valid) username, so callers can fall back gracefully.
- * The pre-filled text is best-effort: if a client ignores it, the chat still opens.
- */
-export function createSellerChatLink(username: string | undefined, message?: string): string | null {
-  const clean = username?.trim().replace(/^@/, "");
-  if (!clean || !TELEGRAM_USERNAME_PATTERN.test(clean)) return null;
-  const base = `https://t.me/${clean}`;
-  return message ? `${base}?text=${encodeURIComponent(message)}` : base;
-}
-
-/* ---------- Launch handling ---------- */
 
 /** The start parameter is untrusted input: accept it only if it looks like a product id. */
 export function extractProductId(startParam: string | null | undefined): string | null {

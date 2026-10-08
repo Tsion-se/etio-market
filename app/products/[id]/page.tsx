@@ -90,7 +90,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           <ProductSpecifications specifications={product.specifications} />
         </div>
         <div className="space-y-10">
-          <SellerCard seller={product.seller} />
+          <SellerCard seller={product.seller} productName={product.name} />
           <ProductLocation location={product.location} />
         </div>
       </div>

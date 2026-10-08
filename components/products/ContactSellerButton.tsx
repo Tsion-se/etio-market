@@ -1,50 +1,58 @@
 "use client";
 
-import { useState } from "react";
-import { MessageCircle, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { Button, buttonClassName } from "@/components/ui/Button";
 import { openTelegramLink } from "@/lib/telegram/client";
+import { createSellerChatLink } from "@/lib/telegram/deeplink";
+import { useTelegram } from "@/lib/telegram/TelegramProvider";
 import { cn } from "@/lib/utils";
 
 /**
- * With `chatHref` (the seller has a Telegram username) this is a real link that opens a direct
- * chat. Without it, it stays a UI placeholder that only shows a notice.
+ * With a valid seller Telegram username this is a link that opens the chat (t.me/<username>);
+ * inside the Telegram Mini App it uses Telegram's own link opener. The chat opens with a
+ * product-specific message prefilled. Without a username the button is disabled with a short note.
  */
 export function ContactSellerButton({
   sellerName,
-  chatHref = null,
+  telegramUsername,
+  productName,
   variant = "primary",
-  noticeAbove = false,
   size,
   className,
 }: {
   sellerName: string;
-  /** Telegram chat link from createSellerChatLink, or null when the seller has no username. */
-  chatHref?: string | null;
+  /** Seller's Telegram username (with or without "@"). */
+  telegramUsername?: string;
+  /** When set, the chat opens with a message about this product. */
+  productName?: string;
   variant?: "primary" | "secondary";
-  /** Float the notice above the parent bar instead of below the button (sticky mobile bar). */
-  noticeAbove?: boolean;
   size?: "md" | "lg";
   className?: string;
 }) {
-  const [notified, setNotified] = useState(false);
+  const { isTelegram } = useTelegram();
+  const chatLink = createSellerChatLink(
+    telegramUsername,
+    productName
+      ? `Hello, I'm interested in the ${productName} listed on EthioMarket. Is it still available?`
+      : undefined,
+  );
 
-  if (chatHref) {
+  if (chatLink) {
     return (
       <div className={cn("flex flex-col", className)}>
         <a
-          href={chatHref}
+          href={chatLink}
           target="_blank"
           rel="noopener noreferrer"
           onClick={(event) => {
-            // Inside the Telegram Mini App, open the chat within Telegram instead of a new tab.
-            if (openTelegramLink(chatHref)) event.preventDefault();
+            // Inside the Mini App, open the chat in Telegram itself instead of a browser tab.
+            if (isTelegram && openTelegramLink(chatLink)) event.preventDefault();
           }}
-          className={buttonClassName({ variant, size })}
+          className={cn(buttonClassName({ variant, size }), "w-full")}
         >
           <Send className="size-4" aria-hidden />
           Chat on Telegram
-          <span className="sr-only"> (opens a chat with {sellerName})</span>
+          <span className="sr-only"> with {sellerName}{!isTelegram && " (opens in a new tab)"}</span>
         </a>
       </div>
     );
@@ -52,24 +60,11 @@ export function ContactSellerButton({
 
   return (
     <div className={cn("flex flex-col", className)}>
-      <Button variant={variant} size={size} onClick={() => setNotified(true)}>
-        <MessageCircle className="size-4" aria-hidden />
+      <Button variant={variant} size={size} disabled className="w-full">
+        <Send className="size-4" aria-hidden />
         Contact seller
       </Button>
-      <p
-        role="status"
-        className={cn(
-          "text-sm text-ink-2",
-          // Floats above the nearest positioned ancestor (the sticky bar) so the bar never changes height.
-          noticeAbove
-            ? notified
-              ? "absolute inset-x-0 bottom-full border-t border-line bg-surface px-4 py-3 text-ink shadow-pop sm:px-6"
-              : "sr-only"
-            : "mt-2",
-        )}
-      >
-        {notified && `Contacting ${sellerName} isn’t available yet. It’s coming in a later update.`}
-      </p>
+      <p className="mt-2 text-sm text-ink-2">Telegram contact unavailable</p>
     </div>
   );
 }

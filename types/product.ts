@@ -10,8 +10,8 @@ export interface Seller {
   /** ISO 8601 date string. */
   joinedAt: string;
   /**
-   * Public Telegram username WITHOUT the "@" (e.g. "hiwot_mobile_hub").
-   * Optional: only set it if the seller agreed to be contacted on Telegram.
+   * Seller's Telegram username, with or without "@" (e.g. "HiwotMobileHub").
+   * When set and valid, "Contact seller" opens a Telegram chat with them.
    */
   telegramUsername?: string;
 }
