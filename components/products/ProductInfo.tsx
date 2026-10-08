@@ -10,21 +10,25 @@ import type { Product } from "@/types/product";
 import { ContactSellerButton } from "./ContactSellerButton";
 import { ShareButton } from "./ShareButton";
 
-export function ProductInfo({ product, chatHref = null }: { product: Product; chatHref?: string | null }) {
+export function ProductInfo({ product }: { product: Product }) {
   const { seller } = product;
 
   return (
-    <div>
-      <Badge tone="primary">{product.category}</Badge>
-      <h1 className="mt-4 text-balance break-words text-3xl font-semibold leading-[1.1] tracking-[-0.03em] text-ink sm:text-4xl">
+    // Flex column so the seller action can sit right under the price on phones (order-*)
+    // while desktop keeps its original order (md:order-*).
+    <div className="flex flex-col">
+      <div className="order-1">
+        <Badge tone="primary">{product.category}</Badge>
+      </div>
+      <h1 className="order-2 mt-4 text-balance break-words text-3xl font-semibold leading-[1.1] tracking-[-0.03em] text-ink sm:text-4xl">
         {product.name}
       </h1>
-      <p className="mt-5 text-4xl font-semibold tabular-nums tracking-[-0.03em] text-ink">
+      <p className="order-3 mt-5 text-4xl font-semibold tabular-nums tracking-[-0.03em] text-ink">
         <span className="sr-only">Price: </span>
         {formatPrice(product.price, product.currency)}
       </p>
 
-      <ul className="mt-5 flex flex-col gap-2.5 border-y border-line py-5 text-sm text-ink-2">
+      <ul className="order-5 mt-5 flex flex-col gap-2.5 border-y border-line py-5 text-sm text-ink-2 md:order-4">
         <li className="flex items-center gap-2.5">
           <MapPin className="size-4 shrink-0 text-ink-3" aria-hidden />
           <span className="min-w-0 break-words">{product.location}</span>
@@ -48,18 +52,16 @@ export function ProductInfo({ product, chatHref = null }: { product: Product; ch
         </li>
       </ul>
 
-      <p className="mt-5 break-words text-base leading-relaxed text-ink-2">{product.shortDescription}</p>
+      <p className="order-6 mt-5 break-words text-base leading-relaxed text-ink-2 md:order-5">{product.shortDescription}</p>
 
-      <div className="mt-7 flex flex-wrap items-start gap-3">
-        {/* On small screens the sticky bar below the page content provides this action. */}
+      {/* Seller action: directly under the price on phones, in its original place on desktop. Scrolls with the page. */}
+      <ContactSellerButton
+        sellerName={seller.name}
+        size="lg"
+        className="order-4 mt-5 w-full md:order-6 md:mt-7 [&>button]:w-full"
+      />
 
-        <ContactSellerButton
-          sellerName={seller.name}
-          chatHref={chatHref}
-          size="lg"
-          className="hidden w-full md:flex [&>button]:w-full [&>a]:w-full"
-          
-        />
+      <div className="order-7 mt-7 flex flex-wrap items-start gap-3 md:mt-3">
         <ShareButton
           productId={product.id}
           title={product.name}

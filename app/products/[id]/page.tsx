@@ -1,20 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { ChevronLeft } from "lucide-react";
 import { TelegramBackButton } from "@/components/telegram/TelegramBackButton";
-import { ContactSellerButton } from "@/components/products/ContactSellerButton";
 import { ProductGallery } from "@/components/products/ProductGallery";
 import { ProductInfo } from "@/components/products/ProductInfo";
 import { ProductLocation } from "@/components/products/ProductLocation";
 import { ProductSpecifications } from "@/components/products/ProductSpecifications";
 import { RelatedProducts } from "@/components/products/RelatedProducts";
 import { SellerCard } from "@/components/products/SellerCard";
-import { createWebsiteProductUrl, getPublicAppUrl, siteConfig } from "@/lib/config";
+import { getPublicAppUrl, siteConfig } from "@/lib/config";
 import { getProductById, getProducts, getRelatedProducts } from "@/lib/data";
-import { createSellerChatLink } from "@/lib/telegram/deeplink";
 import { formatPrice, truncate } from "@/lib/utils";
 
 // Shared by generateMetadata and the page so the lookup runs once per request.
@@ -63,14 +60,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   const related = await getRelatedProducts(product, 4);
 
-  // Direct Telegram chat with the seller (null when the seller has no valid username).
-  // Built once here so the main buttons, seller card and mobile bar always agree.
-  const productUrl = createWebsiteProductUrl(product.id);
-  const chatHref = createSellerChatLink(
-    product.seller.telegramUsername,
-    `Hi, I'm interested in "${product.name}"${productUrl ? ` ${productUrl}` : ""}`,
-  );
-
   return (
     <div className="mx-auto max-w-6xl px-4 pb-8 pt-4 sm:px-6 sm:pt-8">
       <TelegramBackButton fallbackHref="/products" />
@@ -87,7 +76,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         <div className="lg:sticky lg:top-24 lg:self-start">
           <ProductGallery key={product.id} images={product.images} productName={product.name} />
         </div>
-        <ProductInfo product={product} chatHref={chatHref} />
+        <ProductInfo product={product} />
       </div>
 
       <div className="mt-14 grid grid-cols-1 gap-10 border-t border-line pt-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-14">
@@ -101,7 +90,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
           <ProductSpecifications specifications={product.specifications} />
         </div>
         <div className="space-y-10">
-          <SellerCard seller={product.seller} chatHref={chatHref} />
+          <SellerCard seller={product.seller} />
           <ProductLocation location={product.location} />
         </div>
       </div>
@@ -109,23 +98,6 @@ export default async function ProductDetailPage({ params }: PageProps) {
       <div className="mt-16">
         <RelatedProducts products={related} />
       </div>
-
-      {/* Sticky on small screens only; rests at the end of the page so it never covers the footer. */}
-      <div className="sticky bottom-0 z-30 -mx-4 mt-10 border-t border-line bg-surface/95 px-4 pb-[calc(0.75rem+var(--safe-bottom))] pt-3 backdrop-blur sm:-mx-6 sm:px-6 md:hidden">
-        <div className="flex items-end justify-between gap-4">
-          <p className="min-w-0 text-xl font-semibold tabular-nums tracking-[-0.02em] text-ink">
-            <span className="sr-only">Price: </span>
-            {formatPrice(product.price, product.currency)}
-          </p>
-        <ContactSellerButton
-            sellerName={product.seller.name}
-            chatHref={chatHref}
-            noticeAbove
-            className="min-w-0 flex-1 [&>button]:w-full [&>a]:w-full"
-          />
-        </div>
-      </div>
     </div>
-  
   );
 }
